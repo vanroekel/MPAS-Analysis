@@ -42,7 +42,7 @@ def ocn_modelvsobs(config, field):
     # reading only those that are between the start and end dates
     startDate = config.get('time', 'climo_start_date')
     endDate = config.get('time', 'climo_end_date')
-    infiles = streams.readpath('timeSeriesStatsOutput',
+    infiles = streams.readpath('timeSeriesStatsMonthlyOutput',
                                startDate=startDate, endDate=endDate)
     print 'Reading files {} through {}'.format(infiles[0],infiles[-1])
 
@@ -65,10 +65,10 @@ def ocn_modelvsobs(config, field):
 
         ds = xr.open_mfdataset(infiles, preprocess=lambda x: preprocess_mpas(x, yearoffset=yr_offset,
 					   timeSeriesStats=True,
-                               timestr='time_avg_daysSinceStartOfSim',
-                               onlyvars=['time_avg_dThreshMLD']))
+                               timestr='timeMonthly_avg_daysSinceStartOfSim',
+                               onlyvars=['timeMonthly_avg_dThreshMLD']))
         ds = remove_repeated_time_index(ds)
-        ds.rename({'time_avg_dThreshMLD':'mpasData'}, inplace = True)
+        ds.rename({'timeMonthly_avg_dThreshMLD':'mpasData'}, inplace = True)
 
         #Load MLD observational data
         dsData = xr.open_mfdataset(obs_filename)
@@ -95,11 +95,11 @@ def ocn_modelvsobs(config, field):
 
         ds = xr.open_mfdataset(infiles, preprocess=lambda x: preprocess_mpas(x, yearoffset=yr_offset,
 		                    timeSeriesStats=True,
-		                    timestr='time_avg_daysSinceStartOfSim',
-		                    onlyvars=['time_avg_activeTracers_temperature'],
+		                    timestr='timeMonthly_avg_daysSinceStartOfSim',
+		                    onlyvars=['timeMonthly_avg_activeTracers_temperature'],
 		                    selvals={'nVertLevels':1}))
         ds = remove_repeated_time_index(ds)
-        ds.rename({'time_avg_activeTracers_temperature':'mpasData'}, inplace = True)
+        ds.rename({'timeMonthly_avg_activeTracers_temperature':'mpasData'}, inplace = True)
 
         obs_filename = "%s/MODEL.SST.HAD187001-198110.OI198111-201203.nc" % obsdir
         dsData = xr.open_mfdataset(obs_filename)
