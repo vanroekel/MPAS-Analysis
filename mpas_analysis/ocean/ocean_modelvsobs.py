@@ -126,6 +126,39 @@ def ocn_modelvsobs(config, field):
         fileOutLabel = "sstHADOI"
         unitsLabel = r'$^o$C'
 
+    elif field.lower() == 'sss':
+
+        ds = xr.open_mfdataset(infiles, preprocess=lambda x: preprocess_mpas(x, yearoffset=yr_offset,
+		                    timeSeriesStats=True,
+		                    timestr='timeMonthly_avg_daysSinceStartOfSim',
+		                    onlyvars=['timeMonthly_avg_activeTracers_salinity'],
+		                    selvals={'nVertLevels':1}))
+        ds = remove_repeated_time_index(ds)
+        ds.rename({'timeMonthly_avg_activeTracers_salinity':'mpasData'}, inplace = True)
+
+        obs_filename = "%s/Aquarius_V3_SSS_Monthly.nc" % obsdir
+        dsData = xr.open_mfdataset(obs_filename)
+        #Select years for averaging (pre-industrial or present-day)
+        #This seems fragile as definitions can change
+
+        time_start = datetime.datetime(2011,8,1)
+        time_end = datetime.datetime(2014,12,31)
+
+        ds_tslice = dsData.sel(time=slice(time_start, time_end))
+        monthly_clim_data = ds_tslice.groupby('time.month').mean('time')
+
+        #Rename the observation data for code compactness
+        dsData = monthly_clim_data.transpose('month', 'lon', 'lat')
+        dsData.rename({'SSS':'observationData'}, inplace = True)
+
+        preIndustrial_txt = "2011-2014"
+
+        #Set appropriate figure labels for SST
+        obsTitleLabel = "Observations (Aquarius, %s)" % preIndustrial_txt
+        fileOutLabel = "sssAquarius"
+        unitsLabel = 'PSU'
+
+
     time_start = datetime.datetime(yr_offset+climo_yr1, 1, 1)
     time_end = datetime.datetime(yr_offset+climo_yr2, 12, 31)
     ds_tslice = ds.sel(Time=slice(time_start, time_end))
@@ -142,17 +175,15 @@ def ocn_modelvsobs(config, field):
         inds = np.where(np.isnan(dsData.observationData[i, :, :].values))
         daysarray[i, inds[0], inds[1]] = np.NaN
 
-
     # initialize interpolation variables
     d2, inds2, lonTarg, latTarg = init_tree(np.rad2deg(lonCell), np.rad2deg(latCell), constants.lonmin,
                                             constants.lonmax, constants.latmin, constants.latmax,
                                             constants.dLongitude, constants.dLatitude)
     d, inds, lonTargD, latTargD = init_tree(lonData, latData, constants.lonmin, constants.lonmax,
 								constants.latmin, constants.latmax, constants.dLongitude,
-								constants.dLatitude)
+    								constants.dLatitude)
     nLon = lonTarg.shape[0]
     nLat = lonTarg.shape[1]
-
     modelOutput = np.zeros((len(outputTimes), nLon, nLat))
     observations = np.zeros((len(outputTimes), nLon, nLat))
     bias = np.zeros((len(outputTimes), nLon, nLat))

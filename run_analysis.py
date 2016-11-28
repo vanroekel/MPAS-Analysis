@@ -113,6 +113,13 @@ def analysis(config): #{{{
         from mpas_analysis.ocean.ocean_modelvsobs import ocn_modelvsobs
         ocn_modelvsobs(config, 'sst')
 
+    if config.getboolean('sss_modelvsobs','generate'):
+        print ""
+        print "Plotting 2-d maps of SSS climatologies..."
+        from mpas_analysis.ocean.ocean_modelvsobs import ocn_modelvsobs
+        ocn_modelvsobs(config, 'sss')
+
+
     if config.getboolean('mld_modelvsobs','generate'):
         print ""
         print "Plotting 2-d maps of MLD climatologies..."
