@@ -37,7 +37,7 @@ def ohc_timeseries(config):
     # reading only those that are between the start and end dates
     startDate = config.get('time', 'timeseries_start_date')
     endDate = config.get('time', 'timeseries_end_date')
-    infiles = streams.readpath('timeSeriesStatsOutput',
+    infiles = streams.readpath('timeSeriesStatsMonthlyOutput',
                                startDate=startDate, endDate=endDate)
     print 'Reading files {} through {}'.format(infiles[0],infiles[-1])
 
@@ -77,11 +77,11 @@ def ohc_timeseries(config):
     print "  Load ocean data..."
     ds = xr.open_mfdataset(infiles, preprocess=lambda x: preprocess_mpas(x, yearoffset=yr_offset,
                          timeSeriesStats=True,
-                         timestr='time_avg_daysSinceStartOfSim',
-                         onlyvars=['time_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature',
-                                   'time_avg_avgValueWithinOceanLayerRegion_sumLayerMaskValue',
-                                   'time_avg_avgValueWithinOceanLayerRegion_avgLayerArea',
-                                   'time_avg_avgValueWithinOceanLayerRegion_avgLayerThickness']))
+                         timestr='timeMonthly_avg_daysSinceStartOfSim',
+                         onlyvars=['timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature',
+                                   'timeMonthly_avg_avgValueWithinOceanLayerRegion_sumLayerMaskValue',
+                                   'timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerArea',
+                                   'timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerThickness']))
 
 
     ds = remove_repeated_time_index(ds)
@@ -94,8 +94,8 @@ def ohc_timeseries(config):
 
 
     print "  Compute temperature anomalies..."
-    avgLayerTemperature = ds.time_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature
-    avgLayerTemperature_yr1 = mean_yr1.time_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature
+    avgLayerTemperature = ds.timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature
+    avgLayerTemperature_yr1 = mean_yr1.timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerTemperature
 
     avgLayTemp_anomaly = avgLayerTemperature - avgLayerTemperature_yr1
 
@@ -111,9 +111,9 @@ def ohc_timeseries(config):
         ds_v0 = remove_repeated_time_index(ds_v0)
         ds_v0_tslice = ds_v0.sel(Time=slice(time_start,time_end))
 
-    sumLayerMaskValue = ds.time_avg_avgValueWithinOceanLayerRegion_sumLayerMaskValue
-    avgLayerArea = ds.time_avg_avgValueWithinOceanLayerRegion_avgLayerArea
-    avgLayerThickness = ds.time_avg_avgValueWithinOceanLayerRegion_avgLayerThickness
+    sumLayerMaskValue = ds.timeMonthly_avg_avgValueWithinOceanLayerRegion_sumLayerMaskValue
+    avgLayerArea = ds.timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerArea
+    avgLayerThickness = ds.timeMonthly_avg_avgValueWithinOceanLayerRegion_avgLayerThickness
 
     print "  Compute OHC and make plots..."
     for index in range(len(iregions)):
