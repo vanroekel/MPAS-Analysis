@@ -16,9 +16,9 @@ seaice_streams_filename = streams.cice
 # paths to simulation and observational datasets
 archive_dir = /scratch2/scratchdirs/golaz/ACME_simulations/20161117.beta0.A_WCYCL1850S.ne30_oEC_ICG.edison/ 
 archive_dir_ocn = /scratch2/scratchdirs/golaz/ACME_simulations/20161117.beta0.A_WCYCL1850S.ne30_oEC_ICG.edison/run/ 
-scratch_dir = /global/project/projectdirs/acme/lvroekel/20160805v0atm.A_WCYCL1850_v0atm.ne30_oEC.edison.alpha8_00.test.pp
-plots_dir = /global/project/projectdirs/acme/lvroekel/coupled_diagnostics_20161006v1atm.A_WCYCL1850_v1atm.ne30_oEC.edison.alpha8_00-20161006.A_WCYCL1850.ne30_oEC.edison.alpha8_01
-log_dir = /global/project/projectdirs/acme/lvroekel/coupled_diagnostics_20161006v1atm.A_WCYCL1850_v1atm.ne30_oEC.edison.alpha8_00-20161006.A_WCYCL1850.ne30_oEC.edison.alpha8_01.logs
+scratch_dir = /global/project/projectdirs/acme/milena/20160805v0atm.A_WCYCL1850_v0atm.ne30_oEC.edison.alpha8_00.test.pp
+plots_dir = /global/project/projectdirs/acme/milena/coupled_diagnostics_20161006v1atm.A_WCYCL1850_v1atm.ne30_oEC.edison.alpha8_00-20161006.A_WCYCL1850.ne30_oEC.edison.alpha8_01
+log_dir = /global/project/projectdirs/acme/milena/coupled_diagnostics_20161006v1atm.A_WCYCL1850_v1atm.ne30_oEC.edison.alpha8_00-20161006.A_WCYCL1850.ne30_oEC.edison.alpha8_01.logs
 obs_ocndir = /global/project/projectdirs/acme/observations/Ocean
 obs_sstdir = /global/project/projectdirs/acme/observations/Ocean/SST
 obs_sssdir = /global/homes/l/lvroekel 
@@ -33,7 +33,7 @@ mpas_meshfile = /global/project/projectdirs/acme/milena/MPAS-grids/ocn/gridfile.
 mpas_remapfile = /global/project/projectdirs/acme/mapping/maps/map_oEC60to30_TO_0.5x0.5degree_blin.160412.nc
 pop_remapfile = /global/project/projectdirs/acme/mapping/maps/map_gx1v6_TO_0.5x0.5degree_blin.160413.nc
 # path to climotology dataset
-mpas_climodir = /global/project/projectdirs/acme/lvroekel/20161006bugfix.alpha8.A_WCYCL1850S.ne30_oEC_ICG.edison.test.pp
+mpas_climodir = /global/project/projectdirs/acme/milena/20161006bugfix.alpha8.A_WCYCL1850S.ne30_oEC_ICG.edison.test.pp
 
 [seaIceData]
 # paths to sea-ice observational datasets
@@ -51,13 +51,14 @@ climo_yr2 = 50
 yr_offset = 1849
 # start and end years for timeseries analysis
 timeseries_yr1 = 1
-timeseries_yr2 = 9999
+timeseries_yr2 = 60
+#timeseries_yr2 = 9999
 
 [ohc_timeseries]
-generate = 0 
+generate = 1 
 
 [sst_timeseries]
-generate = 0 
+generate = 1 
 
 [nino34_timeseries]
 generate = 0
@@ -69,19 +70,19 @@ generate = 0
 generate = 0
 
 [sst_modelvsobs]
-generate = 0
+generate = 1
 
 [sss_modelvsobs]
 generate = 1
 
 [mld_modelvsobs]
-generate = 0
+generate = 1
 
 [seaice_timeseries]
-generate = 0
+generate = 1
 
 [seaice_modelvsobs]
-generate = 0
+generate = 1
 
 [ohc_timeseries]
 ## compare to output from another model run?

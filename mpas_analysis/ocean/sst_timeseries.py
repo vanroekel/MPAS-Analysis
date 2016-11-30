@@ -29,7 +29,7 @@ def sst_timeseries(config):
     # reading only those that are between the start and end dates
     startDate = config.get('time', 'timeseries_start_date')
     endDate = config.get('time', 'timeseries_end_date')
-    infiles = streams.readpath('timeSeriesStatsOutput',
+    infiles = streams.readpath('timeSeriesStatsMonthlyOutput',
                                startDate=startDate, endDate=endDate)
     print 'Reading files {} through {}'.format(infiles[0],infiles[-1])
 
@@ -50,11 +50,11 @@ def sst_timeseries(config):
 
     # Load data:
     ds = xr.open_mfdataset(infiles, preprocess=lambda x: preprocess_mpas(x, yearoffset=yr_offset,
-                           timeSeriesStats=True, timestr='time_avg_daysSinceStartOfSim',
-                           onlyvars=['time_avg_avgValueWithinOceanRegion_avgSurfaceTemperature']))
+                           timeSeriesStats=True, timestr='timeMonthly_avg_daysSinceStartOfSim',
+                           onlyvars=['timeMonthly_avg_avgValueWithinOceanRegion_avgSurfaceTemperature']))
     ds = remove_repeated_time_index(ds)
 
-    SSTregions = ds.time_avg_avgValueWithinOceanRegion_avgSurfaceTemperature
+    SSTregions = ds.timeMonthly_avg_avgValueWithinOceanRegion_avgSurfaceTemperature
 
     year_start = (pd.to_datetime(ds.Time.min().values)).year
     year_end   = (pd.to_datetime(ds.Time.max().values)).year
