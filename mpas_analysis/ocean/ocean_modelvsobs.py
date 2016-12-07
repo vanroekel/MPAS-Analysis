@@ -145,6 +145,7 @@ def ocn_modelvsobs(config, field):
         time_end = datetime.datetime(2014,12,31)
 
         ds_tslice = dsData.sel(time=slice(time_start, time_end))
+	ds_tslice.SSS.values
         monthly_clim_data = ds_tslice.groupby('time.month').mean('time')
 
         #Rename the observation data for code compactness
