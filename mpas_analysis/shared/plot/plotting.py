@@ -221,7 +221,11 @@ def plot_global_comparison(
     cbarlabel = "units",
     titleFontSize = None,
     figsize = (8,12),
-    dpi = 300):
+    dpi = 300,
+    meanModelLabel=" ",
+    meanObsLabel=" ",
+    meanBiasLabel=" ",
+    RMSELabel = " "):
 
     """
     Plots a data set as a longitude/latitude map.
@@ -284,6 +288,8 @@ def plot_global_comparison(
 
     plt.subplot(3,1,1)
     plt.title(modelTitle, y=1.06, **axis_font)
+    plt.text(-180, 92, meanModelLabel,fontsize=10)
+
     m.drawcoastlines()
     m.fillcontinents(color='grey',lake_color='white')
     m.drawparallels(np.arange(-80.,80.,20.),labels=[True,False,False,False])
@@ -296,6 +302,7 @@ def plot_global_comparison(
 
     plt.subplot(3,1,2)
     plt.title(obsTitle, y=1.06, **axis_font)
+    plt.text(-180, 92, meanObsLabel, fontsize=10)
     m.drawcoastlines()
     m.fillcontinents(color='grey',lake_color='white')
     m.drawparallels(np.arange(-80.,80.,20.),labels=[True,False,False,False])
@@ -308,6 +315,9 @@ def plot_global_comparison(
 
     plt.subplot(3,1,3)
     plt.title(diffTitle, y=1.06, **axis_font)
+    plt.text(-180, 92, meanBiasLabel, fontsize=10)
+    plt.text(-15, 92, RMSELabel, fontsize=10)
+
     m.drawcoastlines()
     m.fillcontinents(color='grey',lake_color='white')
     m.drawparallels(np.arange(-80.,80.,20.),labels=[True,False,False,False])

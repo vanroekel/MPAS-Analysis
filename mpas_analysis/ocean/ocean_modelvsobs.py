@@ -15,6 +15,7 @@ import numpy as np
 import xarray as xr
 import datetime
 from netCDF4 import Dataset as netcdf_dataset
+from mpl_toolkits.basemap import maskoceans
 
 from ..shared.mpas_xarray.mpas_xarray import preprocess_mpas, \
     remove_repeated_time_index
@@ -199,6 +200,18 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
 
     latData, lonData = np.meshgrid(dsObs.lat.values,
                                    dsObs.lon.values)
+
+    lonInds = np.where(dsObs.lon.values > 180.)
+    lonT = dsObs.lon.values
+    lonT[lonInds] -= 360.0
+
+    latMesh, lonMesh = np.meshgrid(dsObs.lat.values, lonT)
+    # Generate a land sea mask for appropriate error means
+    lsmask1 = maskoceans(lonMesh,latMesh,np.ones((lonMesh.shape[0],lonMesh.shape[1])))
+    #store ocean points for average
+    oceanPoints = np.where(lsmask1 == False)
+
+
     latData = latData.flatten()
     lonData = lonData.flatten()
 
@@ -234,6 +247,10 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
     modelOutput = np.zeros((len(outputTimes), nLon, nLat))
     observations = np.zeros((len(outputTimes), nLon, nLat))
     bias = np.zeros((len(outputTimes), nLon, nLat))
+    meanBias = np.zeros(len(outputTimes))
+    RMSE = np.zeros(len(outputTimes))
+    meanModel = np.zeros(len(outputTimes))
+    meanObs = np.zeros(len(outputTimes))
 
     # Interpolate and compute biases
     for timeIndex, timestring in enumerate(outputTimes):
@@ -262,9 +279,21 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
         observations[timeIndex, :, :] = interp_fields(obsData.flatten(), d,
                                                       inds, lonTargD)
 
+        meanModel[timeIndex] = np.mean(modelOutput[timeIndex, oceanPoints[0], oceanPoints[1]])
+        meanObs[timeIndex] = np.mean(observations[timeIndex, oceanPoints[0], oceanPoints[1]])
+
+
     for timeIndex in range(len(outputTimes)):
         bias[timeIndex, :, :] = (modelOutput[timeIndex, :, :] -
                                  observations[timeIndex, :, :])
+
+        #Compute RMSE bias and mean bias
+        meanBias[timeIndex] = np.mean(bias[timeIndex, oceanPoints[0], oceanPoints[1]])
+
+        squareBias = bias[timeIndex,oceanPoints[0], oceanPoints[1]]**2
+        meanSquareBias = np.mean(squareBias)
+        RMSE[timeIndex] = np.sqrt(meanSquareBias)
+
 
     resultContourValues = config.getExpression(sectionName,
                                                'resultContourValues')
@@ -284,6 +313,11 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
             "differenceColormap")
 
     for timeIndex in range(len(outputTimes)):
+        meanModelLab =  'Mean: {:.2f}'.format(meanModel[timeIndex])
+        meanObsLab = 'Mean: {:.2f}'.format(meanObs[timeIndex])
+        meanBiasLab = 'Mean: {:.2f}'.format(meanBias[timeIndex])
+        rmseLab = 'RMSE: {:.2f}'.format(RMSE[timeIndex])
+
         outFileName = "{}/{}_{}_{}_years{:04d}-{:04d}.png".format(
                 plotsDirectory, outFileLabel, mainRunName,
                 outputTimes[timeIndex], startYear, endYear)
@@ -304,4 +338,9 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
                                modelTitle="{}".format(mainRunName),
                                obsTitle=observationTitleLabel,
                                diffTitle="Model-Observations",
-                               cbarlabel=unitsLabel)
+                               cbarlabel=unitsLabel,
+                               meanModelLabel=meanModelLab,
+                               meanObsLabel=meanObsLab,
+                               meanBiasLabel=meanBiasLab,
+                               RMSELabel = rmseLab
+                               )
