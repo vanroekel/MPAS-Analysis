@@ -3,7 +3,7 @@
 ## compared against
 
 # mainRunName is a name that identifies the simulation being analyzed.
-mainRunName = runName
+mainRunName = GMPAS-IAF_T62_oECv3
 # referenceRunName is the name of a reference run to compare against (or None
 # to turn off comparison with a reference, e.g. if no reference case is
 # available)
@@ -19,7 +19,7 @@ preprocessedReferenceRunName = None
 ## options related to reading in the results to be analyzed
 
 # directory containing model results
-baseDirectory = /dir/to/model/output
+baseDirectory = /lcrc/group/acme/jwolfe/acme_scratch/20170216.beta0.GMPAS-IAF.T62_oECv3.anvil/run 
 # names of namelist and streams files.  If not in baseDirectory, give full path
 oceanNamelistFileName = mpas-o_in
 oceanStreamsFileName = streams.ocean
@@ -31,7 +31,7 @@ seaIceStreamsFileName = streams.cice
 ## etc.
 
 # directory where analysis should be written
-baseDirectory = /dir/to/analysis/output
+baseDirectory = /lcrc/group/acme/lvanroe
 
 # subdirectories within baseDirectory for analysis output
 scratchSubdirectory = scratch
@@ -58,7 +58,8 @@ climatologySubdirectory = clim
 # option:
 #    ./run_analysis.py config.analysis --generate \
 #         all,no_ocean,all_timeSeries
-generate = ['all']
+#generate = ['all_ocean','no_timeSeriesOHC','no_timeSeriesSST']
+generate = ['regriddedSST','regriddedSSS','regriddedMLD']
 
 # alternative examples that would perform all analysis except
 #   'timeSeriesOHC'
@@ -74,9 +75,9 @@ generate = ['all']
 ## observations and previous runs
 
 # the first year over which to average climatalogies
-startYear = 11
+startYear = 8 
 # the last year over which to average climatalogies
-endYear = 20
+endYear = 12
 
 [timeSeries]
 ## options related to producing time series plots, often to compare against
@@ -85,14 +86,14 @@ endYear = 20
 # start and end years for timeseries analysis. Using out-of-bounds values
 #   like start_year = 1 and end_year = 9999 will be clipped to the valid range
 #   of years, and is a good way of insuring that all values are used.
-startYear = 1
-endYear = 9999
+startYear = 8 
+endYear = 13 
 
 [oceanObservations]
 ## options related to ocean observations with which the results will be compared
 
 # directory where ocean observations are stored
-baseDirectory = /dir/to/ocean/observations
+baseDirectory = /home/lvanroe/observations  
 sstSubdirectory = SST
 sssSubdirectory = SSS
 mldSubdirectory = MLD
@@ -121,18 +122,6 @@ areaNH = IceArea_timeseries/iceAreaNH_climo.nc
 areaSH = IceArea_timeseries/iceAreaSH_climo.nc
 volNH = PIOMAS/PIOMASvolume_monthly_climo.nc
 volSH = none
-concentrationNASATeamNH_JFM = SSMI/NASATeam_NSIDC0051/SSMI_NASATeam_gridded_concentration_NH_jfm.interp0.5x0.5.nc
-concentrationNASATeamNH_JAS = SSMI/NASATeam_NSIDC0051/SSMI_NASATeam_gridded_concentration_NH_jas.interp0.5x0.5.nc
-concentrationNASATeamSH_DJF = SSMI/NASATeam_NSIDC0051/SSMI_NASATeam_gridded_concentration_SH_djf.interp0.5x0.5.nc
-concentrationNASATeamSH_JJA = SSMI/NASATeam_NSIDC0051/SSMI_NASATeam_gridded_concentration_SH_jja.interp0.5x0.5.nc
-concentrationBootstrapNH_JFM = SSMI/Bootstrap_NSIDC0079/SSMI_Bootstrap_gridded_concentration_NH_jfm.interp0.5x0.5.nc
-concentrationBootstrapNH_JAS = SSMI/Bootstrap_NSIDC0079/SSMI_Bootstrap_gridded_concentration_NH_jas.interp0.5x0.5.nc
-concentrationBootstrapSH_DJF = SSMI/Bootstrap_NSIDC0079/SSMI_Bootstrap_gridded_concentration_SH_djf.interp0.5x0.5.nc
-concentrationBootstrapSH_JJA = SSMI/Bootstrap_NSIDC0079/SSMI_Bootstrap_gridded_concentration_SH_jja.interp0.5x0.5.nc
-thicknessNH_ON = ICESat/ICESat_gridded_mean_thickness_NH_on.interp0.5x0.5.nc
-thicknessNH_FM = ICESat/ICESat_gridded_mean_thickness_NH_fm.interp0.5x0.5.nc
-thicknessSH_ON = ICESat/ICESat_gridded_mean_thickness_SH_on.interp0.5x0.5.nc
-thicknessSH_FM = ICESat/ICESat_gridded_mean_thickness_SH_fm.interp0.5x0.5.nc
 
 [seaIceReference]
 ## options related to sea ice reference run with which the results will be

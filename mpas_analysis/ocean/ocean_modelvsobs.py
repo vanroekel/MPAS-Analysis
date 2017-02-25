@@ -279,8 +279,8 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
         observations[timeIndex, :, :] = interp_fields(obsData.flatten(), d,
                                                       inds, lonTargD)
 
-        meanModel[timeIndex] = np.mean(modelOutput[timeIndex, oceanPoints[0], oceanPoints[1]])
-        meanObs[timeIndex] = np.mean(observations[timeIndex, oceanPoints[0], oceanPoints[1]])
+        meanModel[timeIndex] = np.nanmean(modelOutput[timeIndex, oceanPoints[0], oceanPoints[1]])
+        meanObs[timeIndex] = np.nanmean(observations[timeIndex, oceanPoints[0], oceanPoints[1]])
 
 
     for timeIndex in range(len(outputTimes)):
@@ -288,10 +288,10 @@ def ocn_modelvsobs(config, field, streamMap=None, variableMap=None):
                                  observations[timeIndex, :, :])
 
         #Compute RMSE bias and mean bias
-        meanBias[timeIndex] = np.mean(bias[timeIndex, oceanPoints[0], oceanPoints[1]])
+        meanBias[timeIndex] = np.nanmean(bias[timeIndex, oceanPoints[0], oceanPoints[1]])
 
         squareBias = bias[timeIndex,oceanPoints[0], oceanPoints[1]]**2
-        meanSquareBias = np.mean(squareBias)
+        meanSquareBias = np.nanmean(squareBias)
         RMSE[timeIndex] = np.sqrt(meanSquareBias)
 
 
