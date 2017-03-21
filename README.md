@@ -32,9 +32,9 @@ conda install -c conda-forge numpy scipy matplotlib netCDF4 xarray dask bottlene
      `config.default` into your new config file.  Make sure they have the right
      section name (e.g. `[run]` or `[output]`).  If nothing esle, you will need
      to set `baseDirectory` under `[output]` to the folder where output should
-     be stored.  Note: you should not alter `config.default` directly, since
-     this is intended to hold the default configuration that is modified by your
-     new config file.
+     be stored, which should be different for each test case.  Note: you should 
+     not alter `config.default` directly, since this is intended to hold the 
+     default configuration that is modified by your new config file.
   3. run: `./run_analysis.py config.myrun`.  This will read the configuraiton
      first from `config.default` and then replace that configuraiton with any
      changes from from `config.myrun`
